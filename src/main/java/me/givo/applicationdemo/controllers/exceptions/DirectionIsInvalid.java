@@ -1,4 +1,4 @@
-package me.givo.applicationdemo.models;
+package me.givo.applicationdemo.controllers.exceptions;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,6 +9,6 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString
 @EqualsAndHashCode
-public class TagIsRequired {
-    private final String error = "Tags parameter is required";
+public class DirectionIsInvalid {
+    private final String error = "direction parameter is invalid";
 }

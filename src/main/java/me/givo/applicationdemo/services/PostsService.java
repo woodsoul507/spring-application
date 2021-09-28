@@ -1,25 +1,30 @@
 package me.givo.applicationdemo.services;
 
+import me.givo.applicationdemo.controllers.exceptions.DirectionIsInvalid;
+import me.givo.applicationdemo.controllers.exceptions.SortByIsInvalid;
 import me.givo.applicationdemo.datasources.network.HatchWaysApiDataSource;
-import me.givo.applicationdemo.models.DirectionIsInvalid;
 import me.givo.applicationdemo.models.Posts;
-import me.givo.applicationdemo.models.SortByIsInvalid;
 import me.givo.applicationdemo.utils.MergePostsLists;
 import me.givo.applicationdemo.utils.MergeSortPosts;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 @Service
+@Cacheable("posts")
 public class PostsService {
 
-    @Autowired
-    MergeSortPosts mergeSortPosts = new MergeSortPosts();
-    @Autowired
-    MergePostsLists mergePostsLists = new MergePostsLists();
-    @Autowired
-    HatchWaysApiDataSource dataSource = new HatchWaysApiDataSource();
+
+    private final MergeSortPosts mergeSortPosts;
+    private final MergePostsLists mergePostsLists;
+    private final HatchWaysApiDataSource dataSource;
+
+    public PostsService(MergeSortPosts mergeSortPosts, MergePostsLists mergePostsLists, HatchWaysApiDataSource dataSource) {
+        this.mergeSortPosts = mergeSortPosts;
+        this.mergePostsLists = mergePostsLists;
+        this.dataSource = dataSource;
+    }
 
     public Object getPostsList(String sortBay, String direction, String... tags) {
 

@@ -5,6 +5,10 @@ import me.givo.applicationdemo.models.Posts;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Flux;
+import reactor.core.scheduler.Schedulers;
+
+import java.util.Arrays;
 
 @Repository
 public class HatchWaysApiDataSource implements PostsDataSource {
@@ -24,5 +28,13 @@ public class HatchWaysApiDataSource implements PostsDataSource {
                 .retrieve()
                 .bodyToMono(Posts.class)
                 .block();
+    }
+
+    public Posts parallelretrievePost(String[] tags) {
+        return Flux.fromIterable(Arrays.stream(tags).toList())
+                .parallel()
+                .runOn(Schedulers.boundedElastic())
+                .flatMap((String tag) -> retrievePost(tag))
+                .ordered((o1, o2) -> o2.id() - o1.id());
     }
 }
