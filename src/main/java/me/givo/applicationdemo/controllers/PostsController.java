@@ -18,8 +18,8 @@ public class PostsController {
     }
 
     @GetMapping
-    public Object getPosts(@RequestParam(name = "sortBy", required = true, defaultValue = "id") String sortBy,
-                           @RequestParam(name = "direction", required = true, defaultValue = "asc") String direction,
+    public Object getPosts(@RequestParam(name = "sortBy", required = false, defaultValue = "id") String sortBy,
+                           @RequestParam(name = "direction", required = false, defaultValue = "asc") String direction,
                            @RequestParam(name = "tags") String... tags) {
 
         return postsService.getPostsList(sortBy, direction, tags);

@@ -1,26 +1,30 @@
 package me.givo.applicationdemo.datasources.network;
 
-import me.givo.applicationdemo.datasources.PostsDataSource;
 import me.givo.applicationdemo.models.Posts;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Flux;
-import reactor.core.scheduler.Schedulers;
 
-import java.util.Arrays;
+import java.util.concurrent.CompletableFuture;
 
 @Repository
-public class HatchWaysApiDataSource implements PostsDataSource {
+@Cacheable("retrievePosts")
+public class HatchWaysApiDataSource {
 
     private static final String url = "https://api.hatchways.io/assessment";
     private static final String resource = "/blog/posts";
 
-    @Autowired
-    private WebClient.Builder webClient;
+    private final WebClient.Builder webClient;
 
-    public Posts retrievePost(String tag) {
-        return webClient.baseUrl(url).build().get()
+    public HatchWaysApiDataSource(WebClient.Builder webClient) {
+        this.webClient = webClient;
+    }
+
+    // Async HatchWays api call to retrieve Posts
+    @Async("customExecutor")
+    public CompletableFuture<Posts> retrievePosts(String tag) {
+        Posts response = webClient.baseUrl(url).build().get()
                 .uri(uriBuilder -> uriBuilder
                         .path(resource)
                         .queryParam("tag", tag)
@@ -28,13 +32,7 @@ public class HatchWaysApiDataSource implements PostsDataSource {
                 .retrieve()
                 .bodyToMono(Posts.class)
                 .block();
+        return CompletableFuture.completedFuture(response);
     }
 
-    public Posts parallelretrievePost(String[] tags) {
-        return Flux.fromIterable(Arrays.stream(tags).toList())
-                .parallel()
-                .runOn(Schedulers.boundedElastic())
-                .flatMap((String tag) -> retrievePost(tag))
-                .ordered((o1, o2) -> o2.id() - o1.id());
-    }
 }

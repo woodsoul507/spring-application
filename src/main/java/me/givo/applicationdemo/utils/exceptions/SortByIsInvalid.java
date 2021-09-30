@@ -1,4 +1,4 @@
-package me.givo.applicationdemo.controllers.success;
+package me.givo.applicationdemo.utils.exceptions;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,6 +9,6 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString
 @EqualsAndHashCode
-public class Success {
-    private final boolean success = true;
+public class SortByIsInvalid {
+    private final String error = "sortBy parameter is invalid";
 }

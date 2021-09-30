@@ -1,4 +1,4 @@
-package me.givo.applicationdemo.controllers.exceptions;
+package me.givo.applicationdemo.utils.success;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,6 +9,6 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString
 @EqualsAndHashCode
-public class TagIsRequired {
-    private final String error = "Tags parameter is required";
+public class Success {
+    private final boolean success = true;
 }

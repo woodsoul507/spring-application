@@ -1,7 +1,7 @@
 package me.givo.applicationdemo.controllers;
 
 
-import me.givo.applicationdemo.controllers.success.Success;
+import me.givo.applicationdemo.utils.success.Success;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
